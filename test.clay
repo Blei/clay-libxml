@@ -4,9 +4,8 @@ parseStoryinfo(doc, _cur) {
     var cur = _cur^.children;
     while (not null?(cur)) {
         if (xmlStrcmp(cur^.name, xmlString("keyword")) == 0) {
-            var key = xmlNodeListGetString(doc, cur^.children, 1);
-            println("keyword is '", CStringRef(key), "'");
-            xmlFree(key);
+            var keyword = nodeListGetString(doc, cur^.children);
+            println("keyword is '", keyword, "'");
         }
         cur = cur^.next;
     }

@@ -1,3 +1,14 @@
 public import libxml.generated.*;
 
 xmlString(str) = Pointer[xmlChar](cstring(str));
+
+nodeListGetString(doc, nodeList) {
+    var text = xmlNodeListGetString(doc, nodeList, 1);
+    if (null?(text)) {
+        return move(String());
+    } else {
+        var result = String(text);
+        xmlFree(text);
+        return move(result);
+    }
+}
