@@ -1,0 +1,3 @@
+public import libxml.generated.*;
+
+xmlString(str) = Pointer[xmlChar](cstring(str));

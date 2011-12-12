@@ -1,0 +1,60 @@
+import libxml.*;
+
+parseStoryinfo(doc, _cur) {
+    var cur = _cur^.children;
+    while (not null?(cur)) {
+        if (xmlStrcmp(cur^.name, xmlString("keyword")) == 0) {
+            var key = xmlNodeListGetString(doc, cur^.children, 1);
+            println("keyword is '", CStringRef(key), "'");
+            xmlFree(key);
+        }
+        cur = cur^.next;
+    }
+}
+
+parseDoc(docName) {
+    println("parsing ", docName, "...");
+
+    var doc = xmlParseFile(cstring(docName));
+    if (null?(doc)) {
+        printlnTo(stderr, "Parsing failed");
+        return;
+    }
+
+    var cur = xmlDocGetRootElement(doc);
+
+    if (null?(cur)) {
+        printlnTo(stderr, "Empty document");
+        xmlFreeDoc(doc);
+        return;
+    }
+    
+    if (xmlStrcmp(cur^.name, xmlString("story")) != 0) {
+        printlnTo(stderr, "Document is of the wrong type, root node != story");
+        xmlFreeDoc(doc);
+        return;
+    }
+
+    cur = cur^.children;
+    while (not null?(cur)) {
+        if (xmlStrcmp(cur^.name, xmlString("storyinfo")) == 0) {
+            parseStoryinfo(doc, cur);
+        }
+        cur = cur^.next;
+    }
+
+    xmlFreeDoc(doc);
+}
+
+main(argc, argv): Int {
+
+    if (argc <= 1) {
+        println("Usage: ", CStringRef(argv[0]), " docname");
+        return 1;
+    }
+
+    var docname = CStringRef(argv[1]);
+    parseDoc(docname);
+
+    return 0;
+}
