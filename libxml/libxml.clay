@@ -17,17 +17,18 @@ record XmlNodePtrSequence (
     ptr : xmlNodePtr,
 );
 
+// This record is misused as both the iterator and the value it returns
 private record XmlNodePtrIterator (
     ptr : xmlNodePtr,
 );
 
 inline overload iterator(p:XmlNodePtrSequence) = XmlNodePtrIterator(p.ptr);
 
-inline overload hasNext?(iter:XmlNodePtrIterator) = not null?(iter.ptr);
-
-inline overload next(iter:XmlNodePtrIterator) {
-    assert["boundsCheck"](hasNext?(iter));
-    var res = iter.ptr;
-    iter.ptr = res^.next;
-    return res;
+inline overload nextValue(iter:XmlNodePtrIterator) {
+    iter.ptr = iter.ptr^.next;
+    return iter;
 }
+
+inline overload hasValue?(iter:XmlNodePtrIterator) = not null?(iter.ptr);
+
+inline overload getValue(iter:XmlNodePtrIterator) = iter.ptr;
