@@ -1,4 +1,8 @@
+import io.files.(stderr);
 import libxml.*;
+import printer.(
+    println,
+    printlnTo);
 
 private parseStoryinfo(doc, cur) {
     for (node in XmlNodePtrSequence(cur^.children)) {
